@@ -1,17 +1,22 @@
-from src.domain.environment import Environment
 from src.interfaces.policy_handler import IPolicyHandler
+from src.interfaces.reward_function import IRewardFunction
 
 
 class Agent:
-    def __init__(self, policy_handler: IPolicyHandler):
+    def __init__(
+        self,
+        reward_function: IRewardFunction,
+        policy_handler: IPolicyHandler
+    ):
+        self.reward_function = reward_function
         self.policy_handler = policy_handler
 
-    def learn_policy(self, env: Environment, n=1000):
-        self.policy_handler.initialize(env.get_num_actions())
+    def take_action(self, state: tuple) -> int:
+        return self.policy_handler.choose_action(state)
 
-        current_state = env.get_current_state()
-        for _ in range(n):
-            action = self.policy_handler.choose_action(current_state)
-            new_state, reward = env.take_action(action)
-            self.policy_handler.update_policy(current_state, action, reward)
-            current_state = new_state
+    def initialize_policy(self, num_actions: int):
+        self.policy_handler.initialize(num_actions)
+
+    def update_policy(self, state: tuple, action: int, new_state: tuple):
+        reward = self.reward_function.compute_reward(state, new_state)
+        self.policy_handler.update_policy(state, action, reward)

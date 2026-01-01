@@ -1,6 +1,7 @@
 from typing import Protocol
 
-class IPolicyHandler:
+
+class IPolicyHandler(Protocol):
     def initialize(self, num_actions: int):
         ...
 
