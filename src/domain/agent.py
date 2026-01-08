@@ -19,4 +19,4 @@ class Agent:
 
     def update_policy(self, state: tuple, action: int, new_state: tuple):
         reward = self.reward_function.compute_reward(state, new_state)
-        self.policy_handler.update_policy(state, action, reward)
+        self.policy_handler.update_policy(state, new_state, action, reward)
